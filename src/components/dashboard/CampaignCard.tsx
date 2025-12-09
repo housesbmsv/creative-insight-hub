@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Campaign } from '@/types/creatives';
 import { AdsetCard } from './AdsetCard';
+import { MetricsGrid } from './MetricsGrid';
 import { ChevronDown, Target } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -27,7 +28,19 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
             <h3 className="font-semibold text-lg text-foreground truncate">
               {campaign.campaign_name ?? 'Campaña sin nombre'}
             </h3>
-            <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
+            <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mt-1">
+              {campaign.bm_name && (
+                <>
+                  <span className="text-xs">{campaign.bm_name}</span>
+                  <span>•</span>
+                </>
+              )}
+              {campaign.ad_account_name && (
+                <>
+                  <span className="text-xs">{campaign.ad_account_name}</span>
+                  <span>•</span>
+                </>
+              )}
               <span className="font-mono text-xs bg-muted px-2 py-0.5 rounded">
                 {campaign.campaign_id ?? 'N/A'}
               </span>
@@ -46,8 +59,15 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
         />
       </button>
 
+      {/* Metrics Grid */}
+      {campaign.metrics && (
+        <div className="px-5 pb-4 border-b border-border/30">
+          <MetricsGrid metrics={campaign.metrics} />
+        </div>
+      )}
+
       {isOpen && (
-        <div className="px-5 pb-5 space-y-4">
+        <div className="px-5 pb-5 pt-4 space-y-4">
           {campaign.adsets.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-6">
               No hay adsets en esta campaña

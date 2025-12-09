@@ -6,7 +6,9 @@ import { groupCreatives } from '@/lib/groupCreatives';
 import type { FBCreativeRow, Campaign } from '@/types/creatives';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { FilterBar } from '@/components/dashboard/FilterBar';
+import { DateRangeBar } from '@/components/dashboard/DateRangeBar';
 import { CampaignCard } from '@/components/dashboard/CampaignCard';
+import { useDateRange } from '@/hooks/useDateRange';
 import { Loader2, AlertCircle, FolderOpen } from 'lucide-react';
 
 export default function Dashboard() {
@@ -15,6 +17,8 @@ export default function Dashboard() {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedAccount, setSelectedAccount] = useState('all');
+  
+  const { range } = useDateRange();
 
   useEffect(() => {
     async function fetchData() {
@@ -22,6 +26,8 @@ export default function Dashboard() {
         setLoading(true);
         setError(null);
 
+        // For now, fetch from fb_creatives_dashboard
+        // Later this can be replaced with a view that joins insights_daily_ad
         const { data: rows, error: fetchError } = await supabase
           .from('fb_creatives_dashboard')
           .select('*');
@@ -39,7 +45,7 @@ export default function Dashboard() {
     }
 
     fetchData();
-  }, []);
+  }, [range]); // Refetch when range changes
 
   // Extract unique account IDs
   const accountIds = useMemo(() => {
@@ -81,6 +87,11 @@ export default function Dashboard() {
     return groupCreatives(filteredData);
   }, [filteredData]);
 
+  const handleSendWebhook = async () => {
+    // Placeholder for future webhook functionality
+    console.log('Sending webhook with range:', range);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -108,6 +119,8 @@ export default function Dashboard() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         <DashboardHeader />
+        
+        <DateRangeBar onSend={handleSendWebhook} loading={loading} />
         
         <FilterBar
           searchQuery={searchQuery}
