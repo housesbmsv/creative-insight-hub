@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Adset } from '@/types/creatives';
 import { AdCard } from './AdCard';
+import { MetricsGrid } from './MetricsGrid';
 import { ChevronDown, Layers } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -17,11 +18,11 @@ export function AdsetCard({ adset }: AdsetCardProps) {
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between gap-4 p-4 hover:bg-muted/30 transition-colors text-left"
       >
-        <div className="flex items-center gap-3 min-w-0">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
           <div className="p-2 bg-secondary rounded-md">
             <Layers className="w-4 h-4 text-secondary-foreground" />
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <h4 className="font-medium text-foreground truncate">
               {adset.adset_name ?? 'Adset sin nombre'}
             </h4>
@@ -30,6 +31,11 @@ export function AdsetCard({ adset }: AdsetCardProps) {
               <span>•</span>
               <span>{adset.ads.length} anuncio{adset.ads.length !== 1 ? 's' : ''}</span>
             </div>
+            {adset.metrics && (
+              <div className="mt-2">
+                <MetricsGrid metrics={adset.metrics} compact />
+              </div>
+            )}
           </div>
         </div>
         <ChevronDown
